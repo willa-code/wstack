@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wstack/evaluation.v2",
+  "type": "object",
+  "required": ["verdict", "evaluatorId", "contractDigest", "baselineDigest", "comparisonDigest"],
+  "properties": {
+    "verdict": {"enum": ["approve", "reject", "inconclusive"]},
+    "evaluatorId": {"type": "string", "minLength": 1},
+    "contractDigest": {"type": "string", "minLength": 1},
+    "baselineDigest": {"type": "string", "minLength": 1},
+    "comparisonDigest": {"type": "string", "minLength": 1},
+    "recordedAt": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}

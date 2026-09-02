@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wstack/receipt.v2",
+  "type": "object",
+  "required": [
+    "id", "domain", "acceptanceIds", "result", "evidenceClass", "surface",
+    "artifactDigests", "taskGraphDigest", "verifierId", "verifierDigest",
+    "procedureDigest", "environmentId", "environmentDigest", "producerId", "subjectId",
+    "independenceClass", "verifierStatus", "evidenceManifests"
+  ],
+  "anyOf": [{"required": ["comparisonDigest"]}, {"required": ["commitDigest"]}],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "domain": {"enum": ["engineering", "product", "agent", "research"]},
+    "acceptanceIds": {"type": "array", "items": {"type": "string"}},
+    "result": {"enum": ["pass", "fail", "blocked", "inconclusive"]},
+    "evidenceClass": {"enum": ["static", "deterministic", "matching-surface", "probabilistic"]},
+    "surface": {"type": "string", "minLength": 1},
+    "artifactDigests": {"type": "array", "items": {"type": "string"}},
+    "taskGraphDigest": {"type": "string", "minLength": 1},
+    "comparisonDigest": {"type": "string", "minLength": 1},
+    "commitDigest": {"type": "string", "minLength": 1},
+    "verifierId": {"type": "string", "minLength": 1},
+    "verifierDigest": {"type": "string", "minLength": 1},
+    "procedureDigest": {"type": "string", "minLength": 1},
+    "environmentId": {"type": "string", "minLength": 1},
+    "environmentDigest": {"type": "string", "minLength": 1},
+    "producerId": {"type": "string", "minLength": 1},
+    "subjectId": {"type": "string", "minLength": 1},
+    "independenceClass": {"enum": ["self", "independent", "degraded"]},
+    "verifierStatus": {"type": "string", "minLength": 1},
+    "evidenceManifests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["digest", "mediaType", "availability", "storage"],
+        "properties": {
+          "digest": {"type": "string", "minLength": 1},
+          "mediaType": {"type": "string", "minLength": 1},
+          "availability": {"enum": ["available", "unavailable", "redacted"]},
+          "storage": {"enum": ["inline", "object", "external"]},
+          "content": {"type": "string"},
+          "uri": {"type": "string"},
+          "provenanceDigest": {"type": "string"},
+          "payloadVerified": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

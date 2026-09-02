@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wstack/grounding.v2",
+  "type": "object",
+  "required": ["facts", "assumptions", "decisions", "unresolved"],
+  "properties": {
+    "facts": {"type": "array", "items": {"type": "object", "required": ["claim", "source"], "properties": {"claim": {"type": "string", "minLength": 1}, "source": {"type": "string", "minLength": 1}}, "additionalProperties": true}},
+    "assumptions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "decisions": {"type": "array", "items": {"type": "object", "required": ["id", "choice", "reason", "source"], "properties": {"id": {"type": "string", "minLength": 1}, "choice": {"type": "string", "minLength": 1}, "reason": {"type": "string", "minLength": 1}, "source": {"type": "string", "minLength": 1}}, "additionalProperties": true}},
+    "unresolved": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  },
+  "additionalProperties": true
+}

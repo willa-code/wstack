@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wstack/delivery.v2",
+  "type": "object",
+  "required": ["state", "comparisonDigest", "producerId"],
+  "properties": {
+    "state": {"enum": ["local-ready", "pr-published", "merged", "deployed"]},
+    "comparisonDigest": {"type": "string", "minLength": 1},
+    "producerId": {"type": "string", "minLength": 1},
+    "externalReceipt": {"type": "object"},
+    "recordedAt": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}
