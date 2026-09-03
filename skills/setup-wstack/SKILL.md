@@ -34,6 +34,16 @@ decision-grade research enters `w-mode` and resumes a matching active
 `.wstack` run before creating another one. Use grill when consequential
 decisions remain unresolved. Setup itself remains explicitly user-invoked.
 
+### Executable behavior and security boundary
+
+The shipped runtime is executable JavaScript. Discovery runs `gh --version`
+only to report whether the GitHub CLI is available; it does not request or
+store credentials. `wstack exec` runs only a command name present in the
+configured `.wstack/config.json` allowlist, using the recorded project argv;
+review that file and the referenced project scripts before execution. Bundle
+creation returns JSON on stdout and does not write to a path supplied in the
+input body.
+
 ## Configure
 
 Record:

@@ -42,7 +42,7 @@ const target = join(root, '.wstack', 'bin');
 await mkdir(target, { recursive: true });
 const core = await readFile(join(source, 'core.mjs'), 'utf8');
 const cli = await readFile(join(source, 'wstack.mjs'), 'utf8');
-const bundled = `#!/usr/bin/env node\n${core.replace(/export /g, '')}\n${cli.replace(/^#!.*\n/, '').replace("import { readFile, writeFile } from 'node:fs/promises';\n", '').replace("import { Workspace, WstackError } from './core.mjs';\n", '').replace("import { PRODUCT_VERSION, PROTOCOL_VERSION } from './version.mjs';\n", '')}`;
+const bundled = `#!/usr/bin/env node\n${core.replace(/export /g, '')}\n${cli.replace(/^#!.*\n/, '').replace("import { readFile } from 'node:fs/promises';\n", '').replace("import { Workspace, WstackError } from './core.mjs';\n", '').replace("import { PRODUCT_VERSION, PROTOCOL_VERSION } from './version.mjs';\n", '')}`;
 await writeFile(join(target, 'wstack.mjs'), bundled, { mode: 0o755 });
 await writeFile(join(target, 'version.mjs'), await readFile(join(source, 'version.mjs')), { mode: 0o644 });
 await writeFile(join(target, 'projection.mjs'), await readFile(join(source, 'projection.mjs')), { mode: 0o644 });
