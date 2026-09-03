@@ -101,7 +101,7 @@ jobs:
           test "$base" = main
           test -n "$merged_at"
           test "$merge_sha" = "$(git rev-parse HEAD)"
-          gh pr checks "$VERSION_PR" --required
+          gh pr checks "$VERSION_PR" --json name,state | node scripts/release/verify-pr-checks.mjs
       - name: Create or safely resume the immutable annotated tag
         env:
           GH_TOKEN: ${{ github.token }}

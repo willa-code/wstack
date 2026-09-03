@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { extractReleaseNotes } from '../../scripts/release/extract-notes.mjs';
+import { REQUIRED_RELEASE_CHECKS, verifyPullRequestChecks } from '../../scripts/release/verify-pr-checks.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 
@@ -33,6 +34,8 @@ test('release workflow verifies the remote tag before creating the GitHub Releas
   const release = workflow.indexOf('gh release create "$tag"');
   assert.ok(push >= 0 && verify > push && release > verify);
   assert.match(workflow, /remote_commit.*git rev-parse HEAD/s);
+  assert.doesNotMatch(workflow, /gh pr checks .*--required/);
+  assert.match(workflow, /gh pr checks .*verify-pr-checks\.mjs/);
 });
 
 test('release metadata keeps npm publication disabled', async () => {
@@ -41,4 +44,12 @@ test('release metadata keeps npm publication disabled', async () => {
   assert.equal(packageJson.private, true);
   assert.deepEqual(config.privatePackages, { version: true, tag: false });
   assert.equal(packageJson.scripts.release, undefined);
+});
+
+test('release provenance requires each named CI check to succeed exactly once', () => {
+  const passing = REQUIRED_RELEASE_CHECKS.map(name => ({ name, state: 'SUCCESS' }));
+  assert.doesNotThrow(() => verifyPullRequestChecks(passing));
+  assert.throws(() => verifyPullRequestChecks(passing.slice(1)), /missing or unsuccessful/);
+  assert.throws(() => verifyPullRequestChecks(passing.map((check, index) => index ? check : { ...check, state: 'FAILURE' })), /missing or unsuccessful/);
+  assert.throws(() => verifyPullRequestChecks([...passing, passing[0]]), /missing or unsuccessful/);
 });
