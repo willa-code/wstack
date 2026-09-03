@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": {
+    "name": "wstack",
+    "version": "2.1.0"
+  },
+  "protocol": {
+    "version": "2.1.0",
+    "compatibleVersions": [
+      "2.0.0",
+      "2.1.0"
+    ]
+  },
+  "distribution": {
+    "skillsDirectory": "skills",
+    "agentDirectory": ".agents/skills",
+    "skillsCliPackage": "skills",
+    "skillsCliVersion": "1.5.23",
+    "source": "willa-code/wstack",
+    "sourceRevision": "#v2.1.0"
+  },
+  "skills": [
+    {
+      "name": "continue-work",
+      "path": "skills/continue-work",
+      "docsLink": "../../skills/continue-work/SKILL.md"
+    },
+    {
+      "name": "grill",
+      "path": "skills/grill",
+      "docsLink": "../../skills/grill/SKILL.md"
+    },
+    {
+      "name": "implement-run",
+      "path": "skills/implement-run",
+      "docsLink": "../../skills/implement-run/SKILL.md"
+    },
+    {
+      "name": "learn",
+      "path": "skills/learn",
+      "docsLink": "../../skills/learn/SKILL.md"
+    },
+    {
+      "name": "open-pr",
+      "path": "skills/open-pr",
+      "docsLink": "../../skills/open-pr/SKILL.md"
+    },
+    {
+      "name": "plan-tasks",
+      "path": "skills/plan-tasks",
+      "docsLink": "../../skills/plan-tasks/SKILL.md"
+    },
+    {
+      "name": "prototype",
+      "path": "skills/prototype",
+      "docsLink": "../../skills/prototype/SKILL.md"
+    },
+    {
+      "name": "setup-wstack",
+      "path": "skills/setup-wstack",
+      "docsLink": "../../skills/setup-wstack/SKILL.md"
+    },
+    {
+      "name": "specify",
+      "path": "skills/specify",
+      "docsLink": "../../skills/specify/SKILL.md"
+    },
+    {
+      "name": "tdd",
+      "path": "skills/tdd",
+      "docsLink": "../../skills/tdd/SKILL.md"
+    },
+    {
+      "name": "understand",
+      "path": "skills/understand",
+      "docsLink": "../../skills/understand/SKILL.md"
+    },
+    {
+      "name": "verify-review",
+      "path": "skills/verify-review",
+      "docsLink": "../../skills/verify-review/SKILL.md"
+    },
+    {
+      "name": "w-mode",
+      "path": "skills/w-mode",
+      "docsLink": "../../skills/w-mode/SKILL.md"
+    }
+  ],
+  "hooks": {
+    "runtimeManifest": "skills/setup-wstack/scripts/runtime/runtime-manifest.json",
+    "optionalProductMetadataCommand": "WSTACK_PRODUCT_METADATA_CMD"
+  }
+}

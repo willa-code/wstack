@@ -2,9 +2,9 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, open, readFile, rename, rm, stat, writeFile, readdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
+import { COMPATIBLE_PROTOCOLS, PRODUCT_VERSION, PROTOCOL_VERSION } from './version.mjs';
 
-export const PROTOCOL_VERSION = '2.1.0';
-const COMPATIBLE_PROTOCOLS = new Set(['2.0.0', PROTOCOL_VERSION]);
+export { PRODUCT_VERSION, PROTOCOL_VERSION };
 export const LIFECYCLE = ['FRAMED', 'GROUNDED', 'SPECIFIED', 'PLANNED', 'ASSIGNED', 'IMPLEMENTED', 'VERIFIED', 'REVIEWED', 'DELIVERED'];
 export const DEFAULT_AUTHORITY = {
   edit: true, branch: true, commit: true, executeCommands: true,
@@ -87,8 +87,11 @@ function validateResearchGrounding(content) {
   if (content.research.confidence !== undefined) requiredString(content.research.confidence, 'grounding.research.confidence', 'INVALID_RESEARCH');
   if (content.research.stoppingRationale !== undefined) requiredString(content.research.stoppingRationale, 'grounding.research.stoppingRationale', 'INVALID_RESEARCH');
 }
+function assertCompatibleProtocol(protocolVersion) {
+  if (!COMPATIBLE_PROTOCOLS.has(protocolVersion)) throw new WstackError(`Protocol mismatch: ${protocolVersion}`, 'VERSION_MISMATCH');
+}
 function validateConfig(config) {
-  if (!COMPATIBLE_PROTOCOLS.has(config.protocolVersion)) throw new WstackError(`Protocol mismatch: ${config.protocolVersion}`, 'VERSION_MISMATCH');
+  assertCompatibleProtocol(config.protocolVersion);
   if (!config.authorityProfiles?.[config.defaultAuthorityProfile]) throw new WstackError('Default authority profile is missing', 'INVALID_CONFIG');
   for (const [name, profile] of Object.entries(config.authorityProfiles || {})) {
     for (const capability of Object.keys(DEFAULT_AUTHORITY)) if (typeof profile[capability] !== 'boolean') throw new WstackError(`Authority ${name}.${capability} must be boolean`, 'INVALID_CONFIG');
@@ -158,8 +161,9 @@ export class Workspace {
   eventsPath(id) { return join(this.runDir(id), 'events.ndjson'); }
 
   async init(options = {}) {
-    for (const name of ['runs', 'evidence/objects', 'context', 'decisions', 'verifiers', 'migrations']) await mkdir(join(this.dir, name), { recursive: true });
     const path = join(this.dir, 'config.json');
+    if (await exists(path)) assertCompatibleProtocol((await json(path)).protocolVersion);
+    for (const name of ['runs', 'evidence/objects', 'context', 'decisions', 'verifiers', 'migrations']) await mkdir(join(this.dir, name), { recursive: true });
     const commands = Object.fromEntries(Object.entries(options.deterministicCommands || {}).map(([name, command]) => [name, { ...command, mode: command.mode || 'mutating' }]));
     if (!await exists(path)) await atomicJson(path, {
       protocolVersion: PROTOCOL_VERSION,

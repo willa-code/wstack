@@ -13,9 +13,7 @@ these pages in order:
    generated views.
 5. [Skill model](05-skill-model.md) — how judgment, mechanics, and authority
    divide responsibilities.
-6. [Implementation status](../IMPLEMENTATION-STATUS.md) — enforced behavior,
-   harness responsibilities, evidence limits, and remaining demonstrations.
-7. [v2 migration](../MIGRATION-v2.md) — mapping from the retired skill surface
+6. [v2 migration](../MIGRATION-v2.md) — mapping from the retired skill surface
    and migrating existing state.
 
 The [root README](../../README.md) is the short introduction. The individual

@@ -1,0 +1,34 @@
+{
+  "name": "wstack",
+  "version": "2.1.0",
+  "private": true,
+  "description": "Verified, resumable delivery workflows for agentic development.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "verify:fast": "node scripts/verification/verify-fast.mjs",
+    "verify:core": "node scripts/verification/verify.mjs && npm test",
+    "verify:sandbox": "node scripts/verification/verify-sandbox.mjs",
+    "verify:latest": "node scripts/verification/verify-sandbox.mjs --latest",
+    "verify": "node scripts/verification/verify-all.mjs",
+    "version": "changeset version && node scripts/verification/sync-versions.mjs",
+    "version:check": "node scripts/verification/sync-versions.mjs --check",
+    "release:dry-run": "node scripts/release/dry-run.mjs"
+  },
+  "files": [
+    "skills/",
+    "docs/",
+    "README.md",
+    "MAINTAINING.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "2.29.7",
+    "skills": "1.5.23"
+  }
+}
