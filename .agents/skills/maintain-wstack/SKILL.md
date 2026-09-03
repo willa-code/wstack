@@ -11,6 +11,13 @@ Keep `main` releasable, the public skill suite internally consistent, and the pr
 
 Before changing files, identify the repository root, read `MAINTAINING.md`, and classify the request using [references/change-policy.md](references/change-policy.md). Confirm the affected public skills, shared contracts, documentation, and release impact rather than inferring impact from paths alone.
 
+Before any implementation edit, establish a safe Git workspace:
+
+1. Inspect the current branch and working-tree status. Preserve existing work and stop if unrelated changes make the intended scope unsafe. Treat related uncommitted changes as part of the task only after confirming their provenance and intended scope.
+2. Fetch `origin/main` when the remote is available. If it cannot be fetched, state that base freshness is unverified; do not begin a new implementation from that base unless the user explicitly accepts the limitation.
+3. When starting on `main`, create a focused branch or isolated worktree from current `origin/main`—or another base the user explicitly selected—before editing. Never implement directly on `main`.
+4. When already on an intended task branch or worktree, confirm its base and divergence from `origin/main`. If the base is stale or unexpected, report it before implementation. Do not discard, rebase, or overwrite existing work without authorization.
+
 For an implementation, work through this sequence:
 
 1. Inspect the repository and classify every applicable change class. Combined classes inherit the union of their evidence obligations.
