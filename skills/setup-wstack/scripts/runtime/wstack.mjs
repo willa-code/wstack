@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { readFile, writeFile } from 'node:fs/promises';
-import { Workspace, WstackError, PROTOCOL_VERSION } from './core.mjs';
+import { Workspace, WstackError } from './core.mjs';
+import { PRODUCT_VERSION, PROTOCOL_VERSION } from './version.mjs';
 
-const HELP = `wstack ${PROTOCOL_VERSION}
+const HELP = `wstack ${PRODUCT_VERSION}
 
 Usage: wstack [--root PATH] <command> [arguments]
 
@@ -43,6 +44,7 @@ Commands:
   restore RUN                                    Restore a retired run
   research-record RUN FILE                       Record decision-ready/inconclusive outcome
   exec RUN COMMAND                               Execute allowlisted deterministic command
+  version [--verbose]                           Show product version (and protocol details)
   help                                          Show this help
 `;
 
@@ -54,6 +56,10 @@ async function main() {
   const ws = new Workspace(root); let out;
   switch (command) {
     case 'help': case '--help': case '-h': process.stdout.write(HELP); return;
+    case 'version': case '--version': case '-v':
+      if (args.includes('--verbose')) process.stdout.write(`${JSON.stringify({ productVersion: PRODUCT_VERSION, protocolVersion: PROTOCOL_VERSION }, null, 2)}\n`);
+      else process.stdout.write(`${PRODUCT_VERSION}\n`);
+      return;
     case 'init': out = await ws.init(await file(args[0], {})); break;
     case 'run-create': out = await ws.createRun({ ...(await file(args[4], {})), id: args[0], workflow: args[1], tier: args[2], acceptance: await file(args[3], []) }); break;
     case 'status': out = await ws.status(args[0]); break;

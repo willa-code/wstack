@@ -1,12 +1,42 @@
 {
   "name": "wstack-project-runtime",
+  "productVersion": "2.1.0",
   "protocolVersion": "2.1.0",
+  "compatibleProtocols": [
+    "2.0.0",
+    "2.1.0"
+  ],
   "entrypoint": ".wstack/bin/wstack.mjs",
   "runtime": "node >= 20",
   "dependencies": [],
   "canonicalState": "hash-chained append-only NDJSON events",
-  "generatedViews": ["status.json", "status.md", "handoff.json", "handoff.md", "review.md", "explorer.html"],
-  "environmentScoped": ["locks", "leases", "raw logs", "credentials"],
-  "committed": ["runtime and schemas", "config.json", "run manifests", "events.ndjson", "accepted artifacts", "receipt manifests", "generated views"],
-  "ignored": ["locks", "raw evidence payloads", "scratch", "secrets"]
+  "generatedViews": [
+    "status.json",
+    "status.md",
+    "handoff.json",
+    "handoff.md",
+    "review.md",
+    "explorer.html"
+  ],
+  "environmentScoped": [
+    "locks",
+    "leases",
+    "raw logs",
+    "credentials"
+  ],
+  "committed": [
+    "runtime and schemas",
+    "config.json",
+    "run manifests",
+    "events.ndjson",
+    "accepted artifacts",
+    "receipt manifests",
+    "generated views"
+  ],
+  "ignored": [
+    "locks",
+    "raw evidence payloads",
+    "scratch",
+    "secrets"
+  ]
 }
