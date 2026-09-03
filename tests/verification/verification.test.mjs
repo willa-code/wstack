@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
@@ -13,6 +13,16 @@ test('the repository passes fast verification', async () => {
   const result = await verifyFast(DEFAULT_ROOT);
   assert.deepEqual(result.issues, []);
   assert.equal(result.catalog.skills.length, 13);
+});
+
+test('maintainer implementation guidance requires a fresh non-main workspace', async () => {
+  const skill = await readFile(join(DEFAULT_ROOT, '.agents/skills/maintain-wstack/SKILL.md'), 'utf8');
+  assert.match(skill, /Fetch `origin\/main`/);
+  assert.match(skill, /create a focused branch or isolated worktree/);
+  assert.match(skill, /Never implement directly on `main`/);
+  assert.match(skill, /unless the user explicitly accepts the limitation/);
+  assert.match(skill, /confirming their provenance and intended scope/);
+  assert.match(skill, /Do not discard, rebase, or overwrite existing work without authorization/);
 });
 
 test('full deterministic checks include syntax and metadata', async () => {
