@@ -512,6 +512,30 @@ test('CLI help and installer produce a self-contained project executable', async
   assert.equal(init.status, 0, init.stderr);
 });
 
+test('bundle-create binds the positional task and never writes a body-selected output path', async t => {
+  const f = await fixture(); t.after(f.close);
+  await specifyFeature(f.ws);
+  await f.ws.setTasks('run-1', [task('t', { resources: ['src'] })]);
+  await f.ws.setBinding('run-1', 'base', null, 'base-1');
+  await f.ws.transition('run-1', 'PLANNED');
+  await f.ws.claim('run-1', { taskId: 't', owner: 'cloud', environmentId: 'cloud-1' });
+  await f.ws.transition('run-1', 'ASSIGNED');
+
+  const cli = join(import.meta.dirname, '../../skills/setup-wstack/scripts/runtime/wstack.mjs');
+  const bodyPath = join(f.root, 'bundle-body.json');
+  const outputPath = join(f.root, 'chosen-output.json');
+  await writeFile(bodyPath, JSON.stringify({ taskId: 'wrong-task', environmentId: 'cloud-1', output: outputPath }));
+  const created = spawnSync(process.execPath, [cli, '--root', f.root, 'bundle-create', 'run-1', 't', bodyPath], { encoding: 'utf8' });
+  assert.equal(created.status, 0, created.stderr);
+  assert.equal(JSON.parse(created.stdout).taskId, 't');
+  await assert.rejects(stat(outputPath), error => error.code === 'ENOENT');
+
+  await writeFile(outputPath, 'sentinel');
+  const overwritten = spawnSync(process.execPath, [cli, '--root', f.root, 'bundle-create', 'run-1', 't', bodyPath], { encoding: 'utf8' });
+  assert.equal(overwritten.status, 0, overwritten.stderr);
+  assert.equal(await readFile(outputPath, 'utf8'), 'sentinel');
+});
+
 test('verifier generator rejects placeholders and requires grounded repeatable journeys', async t => {
   const root = await mkdtemp(join(tmpdir(), 'wstack-verifier-')); t.after(() => rm(root, { recursive: true, force: true }));
   const contractPath = join(root, 'verifier-input.json');

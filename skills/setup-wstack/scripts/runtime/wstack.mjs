@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { Workspace, WstackError } from './core.mjs';
 import { PRODUCT_VERSION, PROTOCOL_VERSION } from './version.mjs';
 
@@ -89,7 +89,7 @@ async function main() {
     case 'delivery-record': out = await ws.recordDelivery(args[0], await file(args[1])); break;
     case 'eligible': out = (await ws.status(args[0])).eligibility; break;
     case 'retry': out = await ws.retry(args[0], { taskId: args[1], failureClass: args[2] }); break;
-    case 'bundle-create': { const body = await file(args[2]); out = await ws.createBundle(args[0], { taskId: args[1], ...body }); if (body.output) await writeFile(body.output, JSON.stringify(out, null, 2)); break; }
+    case 'bundle-create': { const body = await file(args[2]); out = await ws.createBundle(args[0], { ...body, taskId: args[1] }); break; }
     case 'bundle-import': out = await ws.importBundle(args[0], await file(args[1])); break;
     case 'projection-request': out = await ws.requestProjection(args[0], await file(args[1])); break;
     case 'projection-reconcile': out = await ws.reconcileProjection(args[0], await file(args[1])); break;
