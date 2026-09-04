@@ -1,6 +1,6 @@
 {
   "name": "wstack-project-runtime",
-  "productVersion": "2.1.0",
+  "productVersion": "2.1.1",
   "protocolVersion": "2.1.0",
   "compatibleProtocols": [
     "2.0.0",

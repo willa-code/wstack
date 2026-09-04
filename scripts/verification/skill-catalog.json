@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "product": {
     "name": "wstack",
-    "version": "2.1.0"
+    "version": "2.1.1"
   },
   "protocol": {
     "version": "2.1.0",
@@ -17,7 +17,7 @@
     "skillsCliPackage": "skills",
     "skillsCliVersion": "1.5.23",
     "source": "willa-code/wstack",
-    "sourceRevision": "#v2.1.0"
+    "sourceRevision": "#v2.1.1"
   },
   "skills": [
     {
