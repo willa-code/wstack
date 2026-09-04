@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1
+
+### Patch Changes
+
+- 44c09c6: Harden setup-wstack bundle creation so input bodies cannot select an output path or override the positional task identifier.
+
 All notable changes are recorded here by Changesets during the version-PR
 phase of a release.
 
