@@ -23,6 +23,10 @@ Tests use Node's built-in `node --test` runner. `verify:core` is the offline
 structural/runtime suite. `verify` adds the disposable local-source installer
 sandbox using the locked installer dependency. Use `npm run verify:latest`
 only for an explicit compatibility check against the upstream latest CLI.
+It allows 5 minutes by default (`WSTACK_SANDBOX_TIMEOUT_MS` overrides) and
+retries networked installs once; a timeout with no installer output is a
+network flake to rerun, and the failure now reports timeout, signal, exit
+status, and elapsed time.
 
 ## SemVer policy
 

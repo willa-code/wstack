@@ -7,7 +7,7 @@ import {
   DEFAULT_ROOT, checkCleanliness, checkCatalogAndSkills, checkDocumentation,
   checkMetadata, checkNodeSyntax, compareDirectories, loadCatalog, verifyFast,
 } from '../../scripts/verification/index.mjs';
-import { runSandbox } from '../../scripts/verification/verify-sandbox.mjs';
+import { runSandbox, resolveSandboxTimeoutMs, describeInstallResult, DEFAULT_SANDBOX_TIMEOUT_MS, LATEST_SANDBOX_TIMEOUT_MS } from '../../scripts/verification/verify-sandbox.mjs';
 
 test('the repository passes fast verification', async () => {
   const result = await verifyFast(DEFAULT_ROOT);
@@ -81,6 +81,40 @@ test('sandbox compares a local install and cleans only after success', async () 
     await assert.rejects(
       runSandbox({ cliCommand: ['node', helper, '{source}', '{agentDir}', 'fail'] }),
       error => error.issues.some(issue => issue.startsWith('sandbox preserved at ')),
+    );
+  } finally { await rm(temp, { recursive: true, force: true }); }
+});
+
+test('sandbox timeout defaults distinguish pinned installs from skills@latest', () => {
+  assert.equal(resolveSandboxTimeoutMs({}), DEFAULT_SANDBOX_TIMEOUT_MS);
+  assert.equal(resolveSandboxTimeoutMs({ latest: true }), LATEST_SANDBOX_TIMEOUT_MS);
+  assert.equal(resolveSandboxTimeoutMs({ timeoutMs: 12345 }), 12345);
+});
+
+test('sandbox install diagnostics preserve timeout, signal, and elapsed time', () => {
+  const detail = describeInstallResult(
+    { status: null, signal: 'SIGTERM', error: Object.assign(new Error('spawnSync npx ETIMEDOUT'), { code: 'ETIMEDOUT' }), stdout: '', stderr: '' },
+    180000,
+    180012,
+  );
+  assert.match(detail, /timeout 180000ms/);
+  assert.match(detail, /elapsed 180012ms/);
+  assert.match(detail, /ETIMEDOUT/);
+  assert.match(detail, /SIGTERM/);
+  assert.match(detail, /no installer output captured/);
+  assert.match(detail, /rerun is often sufficient/);
+});
+
+test('sandbox install failure records the attempted command and attempt history', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'wstack-verification-'));
+  const helper = join(temp, 'fake-skills-cli.mjs');
+  await writeFile(helper, "process.exit(3);\n");
+  try {
+    await assert.rejects(
+      runSandbox({ cliCommand: ['node', helper, '{source}', '{agentDir}'] }),
+      error => error.message === 'sandbox installation failed'
+        && error.issues.some(issue => issue.includes('attempt 1/1'))
+        && error.issues.some(issue => issue.includes('exit 3')),
     );
   } finally { await rm(temp, { recursive: true, force: true }); }
 });
