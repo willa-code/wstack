@@ -9,6 +9,7 @@ const root = join(import.meta.dirname, '../..');
 const installer = join(root, 'skills/setup-wstack/scripts/runtime/install.mjs');
 const discover = join(root, 'skills/setup-wstack/scripts/discover_project.mjs');
 const marker = /<!-- wstack:managed:start -->[\s\S]*?<!-- wstack:managed:end -->/g;
+const productVersion = JSON.parse(await readFile(join(root, 'package.json'), 'utf8')).version;
 
 async function install(dir) {
   const result = spawnSync(process.execPath, [installer, dir], { encoding: 'utf8' });
@@ -37,10 +38,10 @@ test('installed runtime reports separate product and protocol versions', async t
   const runtime = join(dir, '.wstack/bin/wstack.mjs');
   const concise = spawnSync(process.execPath, [runtime, 'version'], { encoding: 'utf8' });
   assert.equal(concise.status, 0, concise.stderr);
-  assert.equal(concise.stdout.trim(), '2.1.0');
+  assert.equal(concise.stdout.trim(), productVersion);
   const verbose = spawnSync(process.execPath, [runtime, 'version', '--verbose'], { encoding: 'utf8' });
   assert.equal(verbose.status, 0, verbose.stderr);
-  assert.deepEqual(JSON.parse(verbose.stdout), { productVersion: '2.1.0', protocolVersion: '2.1.0' });
+  assert.deepEqual(JSON.parse(verbose.stdout), { productVersion, protocolVersion: '2.1.0' });
 });
 
 test('setup preserves nested files, legacy text, user content, and is idempotent', async t => {
